@@ -1,0 +1,10 @@
+body {
+    border: 0;
+    height: auto;
+    width: auto;
+}
+
+div.vacancy_form {
+    width: 30%;
+    margin-top: 250px;
+}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вакансии</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+</head>
+
+<body>
+    <div class="container vacancy_form">
+        <h1>Сформируйте запрос:</h1>
+        <form method="post">
+            <div class="mb-3">
+                <label for="vacancy" class="form-label">Вакансия:</label>
+                <input type="text" id="vacancy" name="vacancy" class="form-control"
+                    placeholder="Введите название вакансии">
+            </div>
+            <div class="mb-3">
+                <label for="experience" class="form-label">Опыт работы:</label>
+                <input type="text" id="experience" name="experience" class="form-control"
+                    placeholder="Введите опыт работы">
+            </div>
+            <div class="mb-3">
+                <label for="employment" class="form-label">Занятость:</label>
+                <input type="text" id="employment" name="employment" class="form-control"
+                    placeholder="Введите занятость">
+            </div>
+            <button type="submit" class="btn btn-primary">Получить</button>
+        </form>
+        <div>
+            {% if vacancies is not none %}
+            {% if vacancies %}
+            <h2>Результаты поиска:</h2>
+            {% for vacancy in vacancies %}
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Вакансия: {{ vacancy.name }}</h5>
+                    <p class="card-text">Опыт: {{ vacancy.experience }}</p>
+                    <p class="card-text">Занятость: {{ vacancy.employment }}</p>
+                    <p class="card-text">Регион: {{ vacancy.area }}</p>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <br>
+            <div class="alert alert-danger">Ничего не найдено</div>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</body>
+
+</html>
