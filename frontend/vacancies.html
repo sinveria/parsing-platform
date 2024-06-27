@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Результаты поиска</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/assets/css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/assets/css/bootstrap.min.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Результаты поиска</h1>
+        <h5>Найдено {{ vacancies|length }} записей, подходящих запросу</h5>
+        <form method="post">
+            <div class="mb-3" style="width: 25%;">
+                <label for="vacancy" class="form-label">Поиск вакансии по названию:</label>
+                <input type="text" id="vacancy" name="vacancy" class="form-control" placeholder="Введите название вакансии">
+            </div>
+        </form>
+        <div class="alert alert-danger w-25" id="nothingfound" style="display: none;">Ничего не найдено</div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row" id="vacancyList">
+                    {% for vacancy in vacancies %}
+                    <div class="col-md-6 mb-3 vacancy-item" data-experience="{{ vacancy.experience }}" data-employment="{{ vacancy.employment }}">
+                        <div class="card" style="height:15em">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ vacancy.name }}</h5>
+                                <p class="card-text experience">{{ vacancy.experience }}</p>
+                                <p class="card-text employment">{{ vacancy.employment }}</p>
+                                <p class="card-text">{{ vacancy.area }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <p class="mt-3">Опыт работы</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="checkbox1" value="Нет опыта" onchange="applyFilters()">
+                    <label class="form-check-label" for="checkbox1">
+                        Нет опыта
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="checkbox2" value="От 1 года до 3 лет" onchange="applyFilters()">
+                    <label class="form-check-label" for="checkbox2">
+                        От 1 года до 3 лет
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="checkbox3" value="От 3 до 6 лет" onchange="applyFilters()">
+                    <label class="form-check-label" for="checkbox3">
+                        От 3 до 6 лет
+                    </label>
+                </div>
+                <p class="mt-3">Тип занятости</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="checkbox4" value="Полная занятость" onchange="applyFilters()">
+                    <label class="form-check-label" for="checkbox4">
+                        Полная занятость
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="checkbox5" value="Частичная занятость" onchange="applyFilters()">
+                    <label class="form-check-label" for="checkbox5">
+                        Частичная занятость
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='/assets/js/script.js') }}"></script>
+</body>
+
+</html>

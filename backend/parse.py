@@ -1,11 +1,13 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 import requests
+import os
 
 app = Flask(__name__, template_folder='../frontend', static_folder='../frontend')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:hisamo3485043@localhost/platform'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', 'mysql+pymysql://root:hisamo3485043@localhost/platform')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = 'supersecretkey'
 db = SQLAlchemy(app)
 
 class Vacancy(db.Model):
@@ -23,7 +25,6 @@ class VacancyData(db.Model):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    vacancies = None
     if request.method == 'POST':
         db.drop_all()
         db.create_all()
@@ -64,9 +65,27 @@ def index():
                         'employment': employment,
                         'area': area
                     })
-            vacancies = filtered_vacancies
-    
-    return render_template('index.html', vacancies=vacancies)
+            
+            if filtered_vacancies:
+                return redirect(url_for('results'))
+            else:
+                flash('Ничего не найдено')
+                return render_template('index.html')
+    return render_template('index.html')
+
+@app.route('/allvacancies')
+def results():
+    vacancies = Vacancy.query.all()
+    results_data = []
+    for vacancy in vacancies:
+        vacancy_data = VacancyData.query.filter_by(vacancy_id=vacancy.id).first()
+        results_data.append({
+            'name': vacancy.name,
+            'experience': vacancy_data.experience,
+            'employment': vacancy_data.employment,
+            'area': vacancy_data.area
+        })
+    return render_template('vacancies.html', vacancies=results_data)
 
 if __name__ == '__main__':
     with app.app_context():
