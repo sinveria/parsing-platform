@@ -3,9 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 import requests
 import os
 
-app = Flask(__name__, template_folder='../frontend', static_folder='../frontend')
+app = Flask(__name__, template_folder='/app/frontend', static_folder='/app/frontend')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', 'mysql+pymysql://root:hisamo3485043@localhost/platform')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', 'mysql+pymysql://root:hisamo3485043@127.0.0.1:3306/platform?charset=utf8mb4')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'supersecretkey'
 db = SQLAlchemy(app)
@@ -13,15 +13,15 @@ db = SQLAlchemy(app)
 class Vacancy(db.Model):
     __tablename__ = 'vacancies'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(255, collation='utf8mb4_unicode_ci'), nullable=False)
 
 class VacancyData(db.Model):
     __tablename__ = 'vacancies_data'
     id = db.Column(db.Integer, primary_key=True)
     vacancy_id = db.Column(db.Integer, db.ForeignKey('vacancies.id'), nullable=False)
-    experience = db.Column(db.String(255), nullable=False)
-    employment = db.Column(db.String(255), nullable=False)
-    area = db.Column(db.String(255), nullable=False)
+    experience = db.Column(db.String(255, collation='utf8mb4_unicode_ci'), nullable=False)
+    employment = db.Column(db.String(255, collation='utf8mb4_unicode_ci'), nullable=False)
+    area = db.Column(db.String(255, collation='utf8mb4_unicode_ci'), nullable=False)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -89,5 +89,6 @@ def results():
 
 if __name__ == '__main__':
     with app.app_context():
+        db.drop_all()
         db.create_all()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=8000, debug=True)
